@@ -36,6 +36,11 @@ yarn-error.log*
 
 # typescript
 next-env.d.ts
+*.tsbuildinfo
+
+# local Sites packaging artifacts
+/.sites-package-stage-*/
+/*.tar.gz
 
 # Maintained Vite plugin and worker sources.
 !/build/
