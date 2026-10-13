@@ -4,6 +4,7 @@ import { ArrowRight, BadgeCheck, Box, HeartHandshake, Mail, MapPin, ShieldCheck,
 import { ProductGallery } from "@/components/product-gallery";
 import { QuantityOrder } from "@/components/quantity-order";
 import { OrderForm } from "@/components/order-form";
+import { MobileOrderBar } from "@/components/mobile-order-bar";
 import { formatNpr, orderingEnabled, product } from "@/lib/product";
 
 const benefitIcons = [Sparkles, BadgeCheck, Wind, HeartHandshake, Box, ShieldCheck];
@@ -84,6 +85,7 @@ export function LandingPage() {
     <section className="final-cta shell"><div><p className="eyebrow">Your next signature piece</p><h2>Wear something worth noticing.</h2><p>Cash on delivery. Nationwide in Nepal. Personal order confirmation.</p></div><Link href="/checkout" className="button-gold">Order your shirt <ArrowRight size={18}/></Link></section>
 
     <footer className="footer"><div className="shell footer-grid"><div className="brand-mark inverse"><span>H</span><div><b>HEXA</b><small>CROCHET STUDIO</small></div></div><p>A considered crochet statement for everyday wardrobes.</p><div><a href={`mailto:${product.businessEmail}`}><Mail size={16}/>{product.businessEmail}</a><span><MapPin size={16}/>Delivery across Nepal</span></div></div><div className="shell footer-bottom"><span>© {new Date().getFullYear()} {product.brand}</span><span>Cash on Delivery · Nepal</span></div></footer>
+    <MobileOrderBar />
   </main>;
 }
 

@@ -65,7 +65,7 @@ export function OrderForm({ initialQuantity = 1, compact = false }: { initialQua
       </div>
       <div className="order-summary-inline"><div><span>Product</span><strong>{product.shortName}</strong></div><div><span>Price per piece</span><strong>{formatNpr(product.offerPrice)}</strong></div><div><span>Delivery</span><strong>{formatNpr(product.deliveryFee)}</strong></div><div className="summary-total"><span>Total</span><strong>{formatNpr(total)}</strong></div></div>
       {message && <div className={`submission-message ${message.type}`} role="alert">{message.type === "saved" ? <CheckCircle2/> : <AlertCircle/>}<span>{message.text}</span></div>}
-      <button className="button-primary order-submit" disabled={submitting || !orderingEnabled}>{submitting ? <><LoaderCircle className="animate-spin"/>Submitting order...</> : "Order now — pay on delivery"}</button>
+      <button className="button-primary order-submit" disabled={submitting || !orderingEnabled}>{submitting ? <><LoaderCircle className="animate-spin"/>Confirming order...</> : "Confirm COD order"}</button>
       <p className="form-assurance"><ShieldCheck/> Your order is not confirmed until the backend reports success.</p>
     </form>
   </div>;
