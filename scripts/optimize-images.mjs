@@ -7,7 +7,9 @@ const source = join(root, "public", "images", "originals");
 const target = join(root, "public", "images");
 await mkdir(target, { recursive: true });
 
-for (const name of ["product-studio", "product-lifestyle", "product-detail", "product-flatlay"]) {
+const imageNames = ["product-studio", "product-lifestyle", "product-detail", "product-flatlay", "product-hanger"];
+
+for (const name of imageNames) {
   await sharp(join(source, `${name}.png`))
     .rotate()
     .resize({ width: 1120, withoutEnlargement: true })
@@ -15,5 +17,5 @@ for (const name of ["product-studio", "product-lifestyle", "product-detail", "pr
     .toFile(join(target, `${name}.webp`));
 }
 
-console.log("Created four responsive-ready WebP product images; PNG originals preserved.");
+console.log(`Created ${imageNames.length} responsive-ready WebP product images; PNG originals preserved.`);
 

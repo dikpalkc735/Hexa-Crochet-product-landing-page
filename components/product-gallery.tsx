@@ -26,7 +26,7 @@ export function ProductGallery({ images }: { images: readonly ProductImage[] }) 
       <button className="gallery-arrow right-4" onClick={() => move(1)} aria-label="Next image"><ChevronRight size={20} /></button>
       <button className="zoom-button" onClick={() => setZoomed(true)} aria-label="Zoom product image"><Expand size={18} /><span>Zoom</span></button>
     </div>
-    <div className="mt-3 grid grid-cols-4 gap-3">
+    <div className="mt-3 grid grid-cols-5 gap-2 sm:gap-3">
       {images.map((image, index) => <button key={image.src} className={`thumb ${active === index ? "thumb-active" : ""}`} onClick={() => setActive(index)} aria-label={`Show image ${index + 1}`}>
         <Image src={image.src} alt="" fill sizes="120px" className="object-cover" />
       </button>)}

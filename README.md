@@ -33,7 +33,7 @@ Edit `lib/product.ts` to change copy, prices, delivery, benefits, FAQs, images a
 Current editable defaults:
 
 - Regular price: NPR 4,999
-- Launch price: NPR 3,999
+- Launch price: NPR 1,999
 - Delivery: NPR 150 across Nepal
 - Notification address: `dikpalkc735@gmail.com`
 
@@ -43,7 +43,7 @@ No verified sizes were provided, so `sizes` is deliberately empty and ordering i
 sizes: [/* add verified sizes here */],
 ```
 
-Do not publish material, care, stock, size or delivery-time claims until verified. Testimonials and videos are not rendered because none were provided.
+Do not publish material, care, stock, size or delivery-time claims until verified. Testimonials remain hidden because no verified reviews were provided. The supplied product video is rendered as click-to-play media and never autoplays.
 
 ## Environment variables
 
@@ -89,7 +89,7 @@ pnpm install
 pnpm dev
 ```
 
-Original PNGs are in `public/images/originals`; optimized WebP files are in `public/images`. Regenerate them after replacing a source:
+Original PNGs are in `public/images/originals`; optimized WebP files are in `public/images`. The supplied MP4 is preserved in `public/videos/originals` and served from `public/videos`. Regenerate images after replacing a source:
 
 ```bash
 node scripts/optimize-images.mjs

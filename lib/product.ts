@@ -8,7 +8,7 @@ export const product = {
     "A distinctive cream-and-black crochet shirt with geometric detailing, an open textured construction, short sleeves and a button-front silhouette.",
   currency: "NPR",
   regularPrice: 4999,
-  offerPrice: 3999,
+  offerPrice: 1999,
   deliveryFee: 150,
   deliveryLabel: "Flat NPR 150 delivery across Nepal",
   businessEmail: "dikpalkc735@gmail.com",
@@ -18,6 +18,14 @@ export const product = {
     { src: "/images/product-lifestyle.webp", alt: "Model wearing the cream and black crochet shirt with black trousers" },
     { src: "/images/product-detail.webp", alt: "Close-up of the crochet stitches, collar and buttons" },
     { src: "/images/product-flatlay.webp", alt: "Crochet shirt styled in a fashion flat lay" },
+    { src: "/images/product-hanger.webp", alt: "Cream and black crochet shirt displayed on a wooden hanger" },
+  ],
+  videos: [
+    {
+      src: "/videos/crochet-shirt-nepal-promo.mp4",
+      poster: "/images/product-hanger.webp",
+      title: "Crochet shirt showcase",
+    },
   ],
   benefits: [
     "Unique hexagon-inspired design",

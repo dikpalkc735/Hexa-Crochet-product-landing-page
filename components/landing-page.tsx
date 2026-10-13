@@ -7,10 +7,12 @@ import { OrderForm } from "@/components/order-form";
 import { formatNpr, orderingEnabled, product } from "@/lib/product";
 
 const benefitIcons = [Sparkles, BadgeCheck, Wind, HeartHandshake, Box, ShieldCheck];
+const discountPercent = Math.round((1 - product.offerPrice / product.regularPrice) * 100);
+const savings = product.regularPrice - product.offerPrice;
 
 export function LandingPage() {
   return <main>
-    <div className="announcement">Launch offer · Save NPR 1,000 · Cash on delivery across Nepal</div>
+    <div className="announcement">Launch offer · Save {formatNpr(savings)} · Cash on delivery across Nepal</div>
     <header className="site-header shell">
       <Link href="/" className="brand-mark" aria-label={`${product.brand} home`}><span>H</span><div><b>HEXA</b><small>CROCHET STUDIO</small></div></Link>
       <nav aria-label="Main navigation"><a href="#details">The shirt</a><a href="#craft">Craft</a><a href="#faq">FAQ</a></nav>
@@ -22,7 +24,7 @@ export function LandingPage() {
         <span className="eyebrow">A statement in every stitch</span>
         <h1>Handmade character.<br/><em>Effortless style.</em></h1>
         <p>{product.description}</p>
-        <div className="hero-price"><b>{formatNpr(product.offerPrice)}</b><span>{formatNpr(product.regularPrice)}</span><i>20% off</i></div>
+        <div className="hero-price"><b>{formatNpr(product.offerPrice)}</b><span>{formatNpr(product.regularPrice)}</span><i>{discountPercent}% off</i></div>
         <div className="flex flex-wrap gap-3"><Link href="/checkout" className="button-primary">Order now <ArrowRight size={17}/></Link><a href={`mailto:${product.businessEmail}`} className="button-secondary">Have questions?</a></div>
         {!orderingEnabled && <p className="configuration-note">Ordering activates as soon as verified size options are added.</p>}
         <div className="trust-row"><span><ShieldCheck/>Cash on delivery</span><span><Truck/>Across Nepal</span><span><HeartHandshake/>Human confirmation</span></div>
@@ -40,6 +42,17 @@ export function LandingPage() {
         <QuantityOrder />
       </div>
     </section>
+
+    {product.videos.length > 0 && <section className="video-section"><div className="shell video-layout">
+      <div className="video-copy"><p className="eyebrow">See it in motion</p><h2>Made to catch the eye from every angle.</h2><p>Press play for a closer look at the cream-and-black crochet details, relaxed shape and statement finish.</p><span className="video-note">The video never autoplays—watch whenever you’re ready.</span></div>
+      <div className="phone-frame" aria-label="Product video in a mobile frame">
+        <div className="phone-speaker" aria-hidden="true" />
+        <video controls playsInline preload="metadata" poster={product.videos[0].poster} aria-label={product.videos[0].title}>
+          <source src={product.videos[0].src} type="video/mp4" />
+          Your browser does not support HTML video.
+        </video>
+      </div>
+    </div></section>}
 
     <section className="ink-section"><div className="shell section">
       <div className="section-heading light"><p className="eyebrow">Why you’ll love it</p><h2>Texture that does the talking.</h2><p>Every detail is designed to make an everyday outfit feel considered.</p></div>
