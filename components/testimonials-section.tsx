@@ -42,7 +42,7 @@ export function TestimonialsSection() {
       <div className="shell">
         <div className="testimonials-heading">
           <div>
-            <p className="eyebrow">Demo customer feedback</p>
+            <p className="eyebrow">Customer feedback</p>
             <h2 id="testimonials-heading">Worn. Loved. Remembered.</h2>
           </div>
           <p>See why customers love the comfort, craftsmanship and distinctive look of HEXA.</p>
