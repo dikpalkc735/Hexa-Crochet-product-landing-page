@@ -57,7 +57,7 @@ async function sheetsRequest(path: string, token: string, init?: RequestInit) {
   return response.json();
 }
 
-export async function appendOrderToSheet(order: OrderRecord) {
+async function prepareOrderSheet() {
   const token = await googleAccessToken();
   const tab = process.env.GOOGLE_SHEET_TAB_NAME!;
   type SheetMetadata = {
@@ -126,7 +126,15 @@ export async function appendOrderToSheet(order: OrderRecord) {
   }
 
   await sheetsRequest(":batchUpdate", token, { method: "POST", body: JSON.stringify({ requests }) });
+  return { token, tab };
+}
 
+export async function setupOrderSheet() {
+  await prepareOrderSheet();
+}
+
+export async function appendOrderToSheet(order: OrderRecord) {
+  const { token, tab } = await prepareOrderSheet();
   const exactLocation = [order.address, order.city, order.postalCode].filter(Boolean).join(", ");
   const notes = [order.size ? `Size: ${order.size}` : "", order.notes || ""].filter(Boolean).join(" | ");
   await sheetsRequest(`/values/${encodeURIComponent(`'${tab.replace(/'/g, "''")}'!A:M`)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`, token, { method: "POST", body: JSON.stringify({ values: [[order.orderId, order.dateTime, order.customerName, order.phone, order.email, exactLocation, order.productName, order.quantity, order.pricePerPiece, order.totalPrice, order.paymentMethod, order.orderStatus, notes]] }) });
