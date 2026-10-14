@@ -68,7 +68,7 @@ async function prepareOrderSheet() {
   const metadata = await sheetsRequest("?fields=sheets(properties,bandedRanges.bandedRangeId,conditionalFormats)", token) as { sheets?: SheetMetadata[] };
   let sheet = metadata.sheets?.find((candidate) => candidate.properties.title === tab);
   if (!sheet) {
-    const created = await sheetsRequest(":batchUpdate", token, { method: "POST", body: JSON.stringify({ requests: [{ addSheet: { properties: { title: tab, gridProperties: { rowCount: 1000, columnCount: 13 }, frozenRowCount: 1 } } }] }) }) as { replies?: { addSheet?: { properties: { sheetId: number; title: string } } }[] };
+    const created = await sheetsRequest(":batchUpdate", token, { method: "POST", body: JSON.stringify({ requests: [{ addSheet: { properties: { title: tab, gridProperties: { rowCount: 1000, columnCount: 13, frozenRowCount: 1 } } } }] }) }) as { replies?: { addSheet?: { properties: { sheetId: number; title: string } } }[] };
     const properties = created.replies?.[0]?.addSheet?.properties;
     if (properties) sheet = { properties };
   }
