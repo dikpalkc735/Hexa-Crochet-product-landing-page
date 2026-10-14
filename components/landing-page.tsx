@@ -6,6 +6,7 @@ import { QuantityOrder } from "@/components/quantity-order";
 import { OrderForm } from "@/components/order-form";
 import { MobileOrderBar } from "@/components/mobile-order-bar";
 import { BrandLogo } from "@/components/brand-logo";
+import { TestimonialsSection } from "@/components/testimonials-section";
 import { formatNpr, orderingEnabled, product } from "@/lib/product";
 
 const benefitIcons = [Sparkles, BadgeCheck, Wind, HeartHandshake, Box, ShieldCheck];
@@ -17,7 +18,7 @@ export function LandingPage() {
     <div className="announcement">Launch offer · Save {formatNpr(savings)} · Cash on delivery across Nepal</div>
     <header className="site-header shell">
       <Link href="/" className="brand-logo-link" aria-label={`${product.brand} home`}><BrandLogo className="brand-logo-header" priority /></Link>
-      <nav aria-label="Main navigation"><a href="#details">The shirt</a><a href="#craft">Craft</a><a href="#faq">FAQ</a></nav>
+      <nav aria-label="Main navigation"><a href="#details">The shirt</a><a href="#craft">Craft</a><a href="#feedback">Feedback</a><a href="#faq">FAQ</a></nav>
       <Link href="/checkout" className="button-small">Order now</Link>
     </header>
 
@@ -79,9 +80,11 @@ export function LandingPage() {
 
     <section className="offer-section"><div className="shell offer-inner"><div><p className="eyebrow">Limited launch price</p><h2>Refresh your style with handmade crochet fashion.</h2><p>Pay only when your order arrives. We’ll call first to confirm every detail.</p></div><div className="offer-price"><span>{formatNpr(product.regularPrice)}</span><strong>{formatNpr(product.offerPrice)}</strong><small>+ {formatNpr(product.deliveryFee)} delivery</small><Link href="/checkout" className="button-primary">Order now</Link></div></div></section>
 
+    <TestimonialsSection />
+
     <section id="faq" className="section shell faq-grid"><div className="section-heading"><p className="eyebrow">Need to know</p><h2>Frequently asked questions.</h2><p>Still unsure? Email us and we’ll help.</p><a href={`mailto:${product.businessEmail}`} className="text-link"><Mail size={17}/> Contact us</a></div><div className="faq-list">{product.faqs.map((faq, index) => <details key={faq.question} open={index === 0}><summary>{faq.question}<span>+</span></summary><p>{faq.answer}</p></details>)}</div></section>
 
-    <section className="order-form-section"><div className="shell order-form-grid"><div><p className="eyebrow">Prefer to order here?</p><h2>Simple details.<br/>No online payment.</h2><p>Complete the form and pay cash when your order arrives. We’ll confirm everything by phone first.</p><div className="mini-trust"><span><ShieldCheck/>Secure server submission</span><span><Truck/>Nationwide delivery</span><span><HeartHandshake/>Personal confirmation</span></div></div><OrderForm compact /></div></section>
+    <section id="order-form" className="order-form-section"><div className="shell order-form-grid"><div><p className="eyebrow">Prefer to order here?</p><h2>Simple details.<br/>No online payment.</h2><p>Complete the form and pay cash when your order arrives. We’ll confirm everything by phone first.</p><div className="mini-trust"><span><ShieldCheck/>Secure server submission</span><span><Truck/>Nationwide delivery</span><span><HeartHandshake/>Personal confirmation</span></div></div><OrderForm compact /></div></section>
 
     <section className="final-cta shell"><div><p className="eyebrow">Your next signature piece</p><h2>Wear something worth noticing.</h2><p>Cash on delivery. Nationwide in Nepal. Personal order confirmation.</p></div><Link href="/checkout" className="button-gold">Order your shirt <ArrowRight size={18}/></Link></section>
 
