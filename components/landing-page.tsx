@@ -7,7 +7,7 @@ import { OrderForm } from "@/components/order-form";
 import { MobileOrderBar } from "@/components/mobile-order-bar";
 import { BrandLogo } from "@/components/brand-logo";
 import { TestimonialsSection } from "@/components/testimonials-section";
-import { formatNpr, orderingEnabled, product } from "@/lib/product";
+import { formatNpr, product } from "@/lib/product";
 
 const benefitIcons = [Sparkles, BadgeCheck, Wind, HeartHandshake, Box, ShieldCheck];
 const discountPercent = Math.round((1 - product.offerPrice / product.regularPrice) * 100);
@@ -29,7 +29,6 @@ export function LandingPage() {
         <p>{product.description}</p>
         <div className="hero-price"><b>{formatNpr(product.offerPrice)}</b><span>{formatNpr(product.regularPrice)}</span><i>{discountPercent}% off</i></div>
         <div className="flex flex-wrap gap-3"><Link href="/checkout" className="button-primary">Order now <ArrowRight size={17}/></Link><a href={`mailto:${product.businessEmail}`} className="button-secondary">Have questions?</a></div>
-        {!orderingEnabled && <p className="configuration-note">Ordering activates as soon as verified size options are added.</p>}
         <div className="trust-row"><span><ShieldCheck/>Cash on delivery</span><span><Truck/>Across Nepal</span><span><HeartHandshake/>Human confirmation</span></div>
       </div>
       <div className="hero-image reveal reveal-delay">
@@ -76,7 +75,7 @@ export function LandingPage() {
       <div className="lifestyle-image"><Image src={product.images[1].src} alt={product.images[1].alt} fill sizes="(max-width: 800px) 100vw, 55vw" className="object-cover" /></div>
     </div></section>
 
-    <section className="section shell size-section"><div><p className="eyebrow">Size & fit</p><h2>Choose with confidence.</h2><p>Verified sizes and exact garment measurements are still pending. We won’t guess them—and ordering will remain disabled until the size chart is complete.</p></div><div className="size-card"><span>Size guide</span><strong>Coming soon</strong><p>Add options and measurements in the central product configuration before launch.</p></div></section>
+    <section className="section shell size-section"><div><p className="eyebrow">Size & fit</p><h2>Choose with confidence.</h2><p>Choose S, M or L during checkout. Our representative can confirm the best fit with you by phone before dispatch.</p></div><div className="size-card"><span>Available sizes</span><strong>S · M · L</strong><p>No payment is collected online, and the order is confirmed with you before delivery.</p></div></section>
 
     <section className="offer-section"><div className="shell offer-inner"><div><p className="eyebrow">Limited launch price</p><h2>Refresh your style with handmade crochet fashion.</h2><p>Pay only when your order arrives. We’ll call first to confirm every detail.</p></div><div className="offer-price"><span>{formatNpr(product.regularPrice)}</span><strong>{formatNpr(product.offerPrice)}</strong><small>+ {formatNpr(product.deliveryFee)} delivery</small><Link href="/checkout" className="button-primary">Order now</Link></div></div></section>
 

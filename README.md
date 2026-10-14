@@ -37,10 +37,10 @@ Current editable defaults:
 - Delivery: NPR 150 across Nepal
 - Notification address: `dikpalkc735@gmail.com`
 
-No verified sizes were provided, so `sizes` is deliberately empty and ordering is disabled. Add real values before launch:
+The verified checkout sizes are configured centrally:
 
 ```ts
-sizes: [/* add verified sizes here */],
+sizes: ["S", "M", "L"],
 ```
 
 Do not publish material, care, stock, size or delivery-time claims until verified. Testimonials remain hidden because no verified reviews were provided. The supplied product video is rendered as click-to-play media and never autoplays.
@@ -80,7 +80,7 @@ The API refuses to append to a mismatched header layout.
 3. Set `EMAIL_FROM`, for example `Hexa Crochet Studio <orders@yourdomain.com>`.
 4. Keep `BUSINESS_EMAIL=dikpalkc735@gmail.com` and set `BRAND_NAME`.
 
-Both email templates use inline CSS and a table layout for Gmail. Customer email is required at checkout, and both messages must be accepted by the email provider before the API returns success.
+Both email templates use inline CSS and a table layout for Gmail. Customer email is required at checkout. Until the HTTPS email provider is configured, orders are still saved successfully to Google Sheets and the email step is logged as unavailable.
 
 Gmail app passwords work only with SMTP over TCP. The Sites production runtime uses HTTPS-only server networking, so its deployed email adapter requires a Resend API key (or another HTTPS email provider adapter) instead of a Gmail app password.
 

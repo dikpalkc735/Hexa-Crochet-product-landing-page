@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
-import { formatNpr, orderTotal, orderingEnabled, product } from "@/lib/product";
+import { formatNpr, orderTotal, product } from "@/lib/product";
 
 export function QuantityOrder() {
   const [quantity, setQuantity] = useState(1);
@@ -15,8 +15,7 @@ export function QuantityOrder() {
     <p className="mt-3 text-sm text-stone-600">+ {formatNpr(product.deliveryFee)} delivery anywhere in Nepal</p>
     <div className="my-6 flex items-center justify-between border-y border-black/10 py-4"><span className="text-sm font-medium">Quantity</span><div className="quantity-control"><button onClick={() => setQuantity((q) => Math.max(1, q - 1))} aria-label="Decrease quantity"><Minus size={16} /></button><output aria-live="polite">{quantity}</output><button onClick={() => setQuantity((q) => Math.min(10, q + 1))} aria-label="Increase quantity"><Plus size={16} /></button></div></div>
     <div className="mb-5 flex items-center justify-between"><span className="text-sm text-stone-600">Total incl. delivery</span><strong className="text-xl">{formatNpr(orderTotal(quantity))}</strong></div>
-    <Link href={`/checkout?quantity=${quantity}`} className={`button-primary w-full ${!orderingEnabled ? "button-disabled" : ""}`} aria-disabled={!orderingEnabled}>{orderingEnabled ? "Order now — cash on delivery" : "Ordering opens when sizes are confirmed"}</Link>
-    {!orderingEnabled && <p className="mt-3 text-center text-xs leading-5 text-stone-500">Size options are intentionally not guessed. Add verified sizes in <code>lib/product.ts</code> to activate ordering.</p>}
+    <Link href={`/checkout?quantity=${quantity}`} className="button-primary w-full">Order now — cash on delivery</Link>
   </div>;
 }
 
