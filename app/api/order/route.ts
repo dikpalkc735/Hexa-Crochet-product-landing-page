@@ -23,7 +23,10 @@ function missingSheetConfig() {
 }
 
 function emailConfigured() {
-  return ["BUSINESS_EMAIL", "EMAIL_FROM", "EMAIL_SERVICE_API_KEY"].every((key) => Boolean(process.env[key]));
+  const common = Boolean(process.env.BUSINESS_EMAIL);
+  const googleBridge = Boolean(process.env.GOOGLE_APPS_SCRIPT_EMAIL_URL);
+  const resend = ["EMAIL_FROM", "EMAIL_SERVICE_API_KEY"].every((key) => Boolean(process.env[key]));
+  return common && (googleBridge || resend);
 }
 
 export async function POST(request: NextRequest) {

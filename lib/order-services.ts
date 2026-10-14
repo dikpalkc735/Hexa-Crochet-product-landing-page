@@ -168,7 +168,30 @@ async function sendEmail(to: string, subject: string, html: string) {
   if (!response.ok) throw new Error(`Email delivery failed (${response.status}): ${(await response.text()).slice(0, 300)}`);
 }
 
+async function sendViaGoogleAppsScript(order: OrderRecord) {
+  const response = await fetch(process.env.GOOGLE_APPS_SCRIPT_EMAIL_URL!, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      accessToken: await googleAccessToken(),
+      orderId: order.orderId,
+      businessEmail: process.env.BUSINESS_EMAIL,
+      customerEmail: order.email,
+      brand: process.env.BRAND_NAME || product.brand,
+      businessHtml: businessEmailHtml(order),
+      customerHtml: customerEmailHtml(order),
+    }),
+  });
+  if (!response.ok) throw new Error(`Google email bridge failed (${response.status}): ${(await response.text()).slice(0, 300)}`);
+  const result = await response.json() as { success?: boolean; error?: string };
+  if (!result.success) throw new Error(`Google email bridge failed: ${result.error || "Unknown response"}`);
+}
+
 export async function sendOrderEmails(order: OrderRecord) {
+  if (process.env.GOOGLE_APPS_SCRIPT_EMAIL_URL) {
+    await sendViaGoogleAppsScript(order);
+    return;
+  }
   const brand = process.env.BRAND_NAME || product.brand;
   const deliveries = [
     sendEmail(process.env.BUSINESS_EMAIL!, `New Product Order Received - ${order.orderId}`, businessEmailHtml(order)),
