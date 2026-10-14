@@ -54,7 +54,7 @@ export function OrderForm({ initialQuantity = 1, compact = false }: { initialQua
       <div className="form-grid">
         <label><span>Full name *</span><input name="customerName" autoComplete="name" required placeholder="Your full name" />{error("customerName")}</label>
         <label><span>Mobile phone number *</span><input name="phone" type="tel" autoComplete="tel" required placeholder="98XXXXXXXX" />{error("phone")}</label>
-        <label className="full-field"><span>Email address <i>(optional)</i></span><input name="email" type="email" autoComplete="email" placeholder="you@example.com" />{error("email")}</label>
+        <label className="full-field"><span>Email address *</span><input name="email" type="email" autoComplete="email" required placeholder="you@example.com" />{error("email")}</label>
         <label className="full-field"><span>Delivery address *</span><input name="address" autoComplete="street-address" required placeholder="Kindly share your exact location" />{error("address")}</label>
         <label><span>City / district *</span><input name="city" autoComplete="address-level2" required placeholder="Kathmandu" />{error("city")}</label>
         <label><span>Postal / area code *</span><input name="postalCode" autoComplete="postal-code" required placeholder="44600" />{error("postalCode")}</label>

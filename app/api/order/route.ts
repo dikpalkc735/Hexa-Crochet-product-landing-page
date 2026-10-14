@@ -8,7 +8,7 @@ export const runtime = "nodejs";
 const orderSchema = z.object({
   customerName: z.string().trim().min(2, "Please enter your full name.").max(100),
   phone: z.string().trim().refine((value) => { const digits = value.replace(/\D/g, ""); return digits.length >= 7 && digits.length <= 15; }, "Please enter a valid mobile number."),
-  email: z.union([z.string().trim().email("Please enter a valid email address."), z.literal("")]).optional(),
+  email: z.string().trim().email("Please enter a valid email address."),
   address: z.string().trim().min(5, "Kindly share your exact location.").max(300),
   city: z.string().trim().min(2, "Please enter your city or district.").max(100),
   postalCode: z.string().trim().min(2, "Please enter a postal code or area code.").max(20),
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
       dateTime: new Intl.DateTimeFormat("en-NP", { timeZone: "Asia/Kathmandu", dateStyle: "medium", timeStyle: "short" }).format(now),
       customerName: parsed.data.customerName,
       phone: parsed.data.phone,
-      email: parsed.data.email || undefined,
+      email: parsed.data.email,
       address: parsed.data.address,
       city: parsed.data.city,
       postalCode: parsed.data.postalCode,

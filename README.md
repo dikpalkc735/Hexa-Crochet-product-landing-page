@@ -1,6 +1,6 @@
 # Hexa Crochet Studio — Cash on Delivery Funnel
 
-A production-oriented Next.js App Router funnel for the **Handmade Crochet Hexagon Unisex Shirt – Cream & Black**. It includes the landing page, `/checkout`, `/thank-you`, a secure `/api/order` route, Google Sheets storage, business email notification and an optional customer confirmation email.
+A production-oriented Next.js App Router funnel for the **Handmade Crochet Hexagon Unisex Shirt – Cream & Black**. It includes the landing page, `/checkout`, `/thank-you`, a secure `/api/order` route, Google Sheets storage, business email notification and a required customer confirmation email.
 
 ## Recommended stack
 
@@ -20,7 +20,7 @@ The email adapter sends **to** the business Gmail address. `EMAIL_FROM` must be 
 2. The browser sends customer information and quantity to `POST /api/order`.
 3. The API validates every field, checks size against `lib/product.ts`, and recalculates prices server-side.
 4. It generates an ID such as `HCS-20261013-A1B2C3`, timestamps it in `Asia/Kathmandu`, and appends it to Google Sheets.
-5. After the sheet append succeeds, it sends the business notification and, if supplied, the customer confirmation email.
+5. After the sheet append succeeds, it sends both the business notification and customer confirmation email.
 6. Success is returned only after every required action succeeds; then the browser opens `/thank-you`.
 7. If the sheet succeeds but email fails, the response includes the saved order ID and warns the customer not to submit a duplicate.
 
@@ -65,7 +65,7 @@ For `GOOGLE_PRIVATE_KEY`, keep escaped newlines in a single-line environment val
 
    `Order ID`, `Date & Time`, `Customer Name`, `Phone Number`, `Email Address`, `Exact Location`, `Product Name`, `Quantity`, `Price Per Piece`, `Total Price`, `Payment Method`, `Order Status`, `Notes`
 
-4. Select row 1 and use **Data → Create a filter**. Freeze it with **View → Freeze → 1 row**.
+4. The API automatically adds a dark-green header, alternating cream rows, a frozen header, filters, practical column widths, wrapped address/notes cells and NPR currency formatting.
 5. Select `L2:L`, use **Data → Data validation → Dropdown**, and add `New Order`, `Order Confirmed`, `Order Ongoing`, `Delivered`, `Cancelled`. The API also applies this validation automatically.
 6. In Google Cloud Console, enable the Google Sheets API, create a service account and generate a JSON key.
 7. Put its `client_email` into `GOOGLE_SERVICE_ACCOUNT_EMAIL` and `private_key` into `GOOGLE_PRIVATE_KEY`.
@@ -80,7 +80,9 @@ The API refuses to append to a mismatched header layout.
 3. Set `EMAIL_FROM`, for example `Hexa Crochet Studio <orders@yourdomain.com>`.
 4. Keep `BUSINESS_EMAIL=dikpalkc735@gmail.com` and set `BRAND_NAME`.
 
-Both email templates use inline CSS and a table layout for Gmail. The customer email is sent only when an email address is provided.
+Both email templates use inline CSS and a table layout for Gmail. Customer email is required at checkout, and both messages must be accepted by the email provider before the API returns success.
+
+Gmail app passwords work only with SMTP over TCP. The Sites production runtime uses HTTPS-only server networking, so its deployed email adapter requires a Resend API key (or another HTTPS email provider adapter) instead of a Gmail app password.
 
 ## Local development
 

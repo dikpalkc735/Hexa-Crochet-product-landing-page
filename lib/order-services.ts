@@ -5,7 +5,7 @@ export type OrderRecord = {
   dateTime: string;
   customerName: string;
   phone: string;
-  email?: string;
+  email: string;
   address: string;
   city: string;
   postalCode: string;
@@ -60,11 +60,17 @@ async function sheetsRequest(path: string, token: string, init?: RequestInit) {
 export async function appendOrderToSheet(order: OrderRecord) {
   const token = await googleAccessToken();
   const tab = process.env.GOOGLE_SHEET_TAB_NAME!;
-  const metadata = await sheetsRequest("?fields=sheets.properties", token) as { sheets?: { properties: { sheetId: number; title: string } }[] };
-  let sheet = metadata.sheets?.find((candidate) => candidate.properties.title === tab)?.properties;
+  type SheetMetadata = {
+    properties: { sheetId: number; title: string; gridProperties?: { rowCount?: number } };
+    bandedRanges?: { bandedRangeId: number }[];
+    conditionalFormats?: unknown[];
+  };
+  const metadata = await sheetsRequest("?fields=sheets(properties,bandedRanges.bandedRangeId,conditionalFormats)", token) as { sheets?: SheetMetadata[] };
+  let sheet = metadata.sheets?.find((candidate) => candidate.properties.title === tab);
   if (!sheet) {
     const created = await sheetsRequest(":batchUpdate", token, { method: "POST", body: JSON.stringify({ requests: [{ addSheet: { properties: { title: tab, gridProperties: { rowCount: 1000, columnCount: 13 }, frozenRowCount: 1 } } }] }) }) as { replies?: { addSheet?: { properties: { sheetId: number; title: string } } }[] };
-    sheet = created.replies?.[0]?.addSheet?.properties;
+    const properties = created.replies?.[0]?.addSheet?.properties;
+    if (properties) sheet = { properties };
   }
   if (!sheet) throw new Error(`Could not create or locate the “${tab}” sheet tab.`);
 
@@ -76,14 +82,54 @@ export async function appendOrderToSheet(order: OrderRecord) {
     throw new Error(`The “${tab}” header row does not match the required order columns. See README.md.`);
   }
 
-  await sheetsRequest(":batchUpdate", token, { method: "POST", body: JSON.stringify({ requests: [
-    { updateSheetProperties: { properties: { sheetId: sheet.sheetId, gridProperties: { frozenRowCount: 1 } }, fields: "gridProperties.frozenRowCount" } },
-    { setDataValidation: { range: { sheetId: sheet.sheetId, startRowIndex: 1, endRowIndex: 10000, startColumnIndex: 11, endColumnIndex: 12 }, rule: { condition: { type: "ONE_OF_LIST", values: STATUSES.map((userEnteredValue) => ({ userEnteredValue })) }, strict: true, showCustomUi: true } } },
-  ] }) });
+  const sheetId = sheet.properties.sheetId;
+  const rowCount = Math.max(sheet.properties.gridProperties?.rowCount || 1000, 2);
+  const darkGreen = { red: 0.071, green: 0.216, blue: 0.165 };
+  const gold = { red: 0.769, green: 0.604, blue: 0.384 };
+  const warmWhite = { red: 1, green: 0.988, blue: 0.969 };
+  const cream = { red: 0.969, green: 0.949, blue: 0.91 };
+  const sheetRange = { sheetId, startRowIndex: 0, endRowIndex: rowCount, startColumnIndex: 0, endColumnIndex: 13 };
+  const requests: object[] = [];
+
+  if (!sheet.bandedRanges?.length) {
+    requests.push({ addBanding: { bandedRange: { range: sheetRange, rowProperties: { headerColorStyle: { rgbColor: darkGreen }, firstBandColorStyle: { rgbColor: warmWhite }, secondBandColorStyle: { rgbColor: cream } } } } });
+  }
+
+  requests.push(
+    { updateSheetProperties: { properties: { sheetId, gridProperties: { frozenRowCount: 1 }, tabColorStyle: { rgbColor: gold } }, fields: "gridProperties.frozenRowCount,tabColorStyle" } },
+    { updateDimensionProperties: { range: { sheetId, dimension: "ROWS", startIndex: 0, endIndex: 1 }, properties: { pixelSize: 42 }, fields: "pixelSize" } },
+    { repeatCell: { range: { sheetId, startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: 13 }, cell: { userEnteredFormat: { backgroundColorStyle: { rgbColor: darkGreen }, horizontalAlignment: "CENTER", verticalAlignment: "MIDDLE", wrapStrategy: "WRAP", textFormat: { bold: true, fontFamily: "Arial", fontSize: 10, foregroundColorStyle: { rgbColor: warmWhite } }, padding: { top: 8, right: 8, bottom: 8, left: 8 } } }, fields: "userEnteredFormat" } },
+    { repeatCell: { range: { sheetId, startRowIndex: 1, endRowIndex: rowCount, startColumnIndex: 0, endColumnIndex: 13 }, cell: { userEnteredFormat: { verticalAlignment: "MIDDLE", textFormat: { fontFamily: "Arial", fontSize: 10 }, padding: { top: 6, right: 7, bottom: 6, left: 7 } } }, fields: "userEnteredFormat.verticalAlignment,userEnteredFormat.textFormat,userEnteredFormat.padding" } },
+    { repeatCell: { range: { sheetId, startRowIndex: 1, endRowIndex: rowCount, startColumnIndex: 5, endColumnIndex: 7 }, cell: { userEnteredFormat: { wrapStrategy: "WRAP" } }, fields: "userEnteredFormat.wrapStrategy" } },
+    { repeatCell: { range: { sheetId, startRowIndex: 1, endRowIndex: rowCount, startColumnIndex: 12, endColumnIndex: 13 }, cell: { userEnteredFormat: { wrapStrategy: "WRAP" } }, fields: "userEnteredFormat.wrapStrategy" } },
+    { repeatCell: { range: { sheetId, startRowIndex: 1, endRowIndex: rowCount, startColumnIndex: 7, endColumnIndex: 8 }, cell: { userEnteredFormat: { horizontalAlignment: "CENTER", numberFormat: { type: "NUMBER", pattern: "0" } } }, fields: "userEnteredFormat.horizontalAlignment,userEnteredFormat.numberFormat" } },
+    { repeatCell: { range: { sheetId, startRowIndex: 1, endRowIndex: rowCount, startColumnIndex: 8, endColumnIndex: 10 }, cell: { userEnteredFormat: { horizontalAlignment: "RIGHT", numberFormat: { type: "CURRENCY", pattern: "\"NPR\" #,##0" } } }, fields: "userEnteredFormat.horizontalAlignment,userEnteredFormat.numberFormat" } },
+    { setBasicFilter: { filter: { range: sheetRange } } },
+    { setDataValidation: { range: { sheetId, startRowIndex: 1, endRowIndex: rowCount, startColumnIndex: 11, endColumnIndex: 12 }, rule: { condition: { type: "ONE_OF_LIST", values: STATUSES.map((userEnteredValue) => ({ userEnteredValue })) }, strict: true, showCustomUi: true } } },
+  );
+
+  [185, 155, 165, 125, 190, 285, 260, 80, 125, 125, 150, 145, 250].forEach((pixelSize, index) => {
+    requests.push({ updateDimensionProperties: { range: { sheetId, dimension: "COLUMNS", startIndex: index, endIndex: index + 1 }, properties: { pixelSize }, fields: "pixelSize" } });
+  });
+
+  if (!sheet.conditionalFormats?.length) {
+    const statusStyles = [
+      ["New Order", { red: 1, green: 0.941, blue: 0.776 }, { red: 0.388, green: 0.278, blue: 0.102 }],
+      ["Order Confirmed", { red: 0.878, green: 0.941, blue: 0.89 }, { red: 0.153, green: 0.388, blue: 0.224 }],
+      ["Order Ongoing", { red: 0.851, green: 0.91, blue: 0.969 }, { red: 0.122, green: 0.314, blue: 0.502 }],
+      ["Delivered", { red: 0.824, green: 0.929, blue: 0.851 }, { red: 0.098, green: 0.349, blue: 0.176 }],
+      ["Cancelled", { red: 0.973, green: 0.855, blue: 0.839 }, { red: 0.502, green: 0.165, blue: 0.129 }],
+    ] as const;
+    statusStyles.forEach(([status, background, foreground], index) => {
+      requests.push({ addConditionalFormatRule: { index, rule: { ranges: [{ sheetId, startRowIndex: 1, endRowIndex: rowCount, startColumnIndex: 11, endColumnIndex: 12 }], booleanRule: { condition: { type: "TEXT_EQ", values: [{ userEnteredValue: status }] }, format: { backgroundColorStyle: { rgbColor: background }, textFormat: { bold: true, foregroundColorStyle: { rgbColor: foreground } } } } } } });
+    });
+  }
+
+  await sheetsRequest(":batchUpdate", token, { method: "POST", body: JSON.stringify({ requests }) });
 
   const exactLocation = [order.address, order.city, order.postalCode].filter(Boolean).join(", ");
   const notes = [order.size ? `Size: ${order.size}` : "", order.notes || ""].filter(Boolean).join(" | ");
-  await sheetsRequest(`/values/${encodeURIComponent(`'${tab.replace(/'/g, "''")}'!A:M`)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`, token, { method: "POST", body: JSON.stringify({ values: [[order.orderId, order.dateTime, order.customerName, order.phone, order.email || "", exactLocation, order.productName, order.quantity, order.pricePerPiece, order.totalPrice, order.paymentMethod, order.orderStatus, notes]] }) });
+  await sheetsRequest(`/values/${encodeURIComponent(`'${tab.replace(/'/g, "''")}'!A:M`)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`, token, { method: "POST", body: JSON.stringify({ values: [[order.orderId, order.dateTime, order.customerName, order.phone, order.email, exactLocation, order.productName, order.quantity, order.pricePerPiece, order.totalPrice, order.paymentMethod, order.orderStatus, notes]] }) });
 }
 
 function escapeHtml(value: string | number) {
@@ -116,8 +162,10 @@ async function sendEmail(to: string, subject: string, html: string) {
 
 export async function sendOrderEmails(order: OrderRecord) {
   const brand = process.env.BRAND_NAME || product.brand;
-  const deliveries = [sendEmail(process.env.BUSINESS_EMAIL!, `New Product Order Received - ${order.orderId}`, businessEmailHtml(order))];
-  if (order.email) deliveries.push(sendEmail(order.email, `Your Order Has Been Received - ${brand}`, customerEmailHtml(order)));
+  const deliveries = [
+    sendEmail(process.env.BUSINESS_EMAIL!, `New Product Order Received - ${order.orderId}`, businessEmailHtml(order)),
+    sendEmail(order.email, `Your Order Has Been Received - ${brand}`, customerEmailHtml(order)),
+  ];
   const results = await Promise.allSettled(deliveries);
   const failures = results.filter((result): result is PromiseRejectedResult => result.status === "rejected");
   if (failures.length) throw new Error(failures.map((failure) => failure.reason instanceof Error ? failure.reason.message : String(failure.reason)).join("; "));
