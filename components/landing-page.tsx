@@ -19,7 +19,7 @@ export function LandingPage() {
     <header className="site-header shell">
       <Link href="/" className="brand-logo-link" aria-label={`${product.brand} home`}><BrandLogo className="brand-logo-header" priority /></Link>
       <nav aria-label="Main navigation"><a href="#details">The shirt</a><a href="#craft">Craft</a><a href="#feedback">Feedback</a><a href="#faq">FAQ</a></nav>
-      <Link href="/checkout" className="button-small">Order now</Link>
+      <a href="/checkout" className="button-small">Order now</a>
     </header>
 
     <section className="hero shell">
@@ -28,7 +28,7 @@ export function LandingPage() {
         <h1>Handmade character.<br/><em>Effortless style.</em></h1>
         <p>{product.description}</p>
         <div className="hero-price"><b>{formatNpr(product.offerPrice)}</b><span>{formatNpr(product.regularPrice)}</span><i>{discountPercent}% off</i></div>
-        <div className="flex flex-wrap gap-3"><Link href="/checkout" className="button-primary">Order now <ArrowRight size={17}/></Link><a href={`mailto:${product.businessEmail}`} className="button-secondary">Have questions?</a></div>
+        <div className="flex flex-wrap gap-3"><a href="/checkout" className="button-primary">Order now <ArrowRight size={17}/></a><a href={`mailto:${product.businessEmail}`} className="button-secondary">Have questions?</a></div>
         <div className="trust-row"><span><ShieldCheck/>Cash on delivery</span><span><Truck/>Across Nepal</span><span><HeartHandshake/>Human confirmation</span></div>
       </div>
       <div className="hero-image reveal reveal-delay">
@@ -59,7 +59,7 @@ export function LandingPage() {
     <section className="ink-section"><div className="shell section">
       <div className="section-heading light"><p className="eyebrow">Why you’ll love it</p><h2>Texture that does the talking.</h2><p>Every detail is designed to make an everyday outfit feel considered.</p></div>
       <div className="benefit-grid">{product.benefits.map((benefit, index) => { const Icon = benefitIcons[index]; return <article key={benefit}><Icon/><span>0{index + 1}</span><h3>{benefit}</h3></article>; })}</div>
-      <div className="center-cta"><Link href="/checkout" className="button-gold">Purchase now <ArrowRight size={17}/></Link></div>
+      <div className="center-cta"><a href="/checkout" className="button-gold">Purchase now <ArrowRight size={17}/></a></div>
     </div></section>
 
     <section id="craft" className="section shell editorial-grid">
@@ -71,13 +71,13 @@ export function LandingPage() {
     </section>
 
     <section className="lifestyle-section"><div className="shell lifestyle-grid">
-      <div className="lifestyle-copy"><p className="eyebrow">One piece, your way</p><h2>Made to stand out.<br/>Easy to make yours.</h2><p>Ground the bold crochet texture with clean black trousers, relaxed denim or holiday-ready shorts.</p><Link href="/checkout" className="text-link">Buy now <ArrowRight size={17}/></Link></div>
+      <div className="lifestyle-copy"><p className="eyebrow">One piece, your way</p><h2>Made to stand out.<br/>Easy to make yours.</h2><p>Ground the bold crochet texture with clean black trousers, relaxed denim or holiday-ready shorts.</p><a href="/checkout" className="text-link">Buy now <ArrowRight size={17}/></a></div>
       <div className="lifestyle-image"><Image src={product.images[1].src} alt={product.images[1].alt} fill sizes="(max-width: 800px) 100vw, 55vw" className="object-cover" /></div>
     </div></section>
 
     <section className="section shell size-section"><div><p className="eyebrow">Size & fit</p><h2>Choose with confidence.</h2><p>Choose S, M or L during checkout. Our representative can confirm the best fit with you by phone before dispatch.</p></div><div className="size-card"><span>Available sizes</span><strong>S · M · L</strong><p>No payment is collected online, and the order is confirmed with you before delivery.</p></div></section>
 
-    <section className="offer-section"><div className="shell offer-inner"><div><p className="eyebrow">Limited launch price</p><h2>Refresh your style with handmade crochet fashion.</h2><p>Pay only when your order arrives. We’ll call first to confirm every detail.</p></div><div className="offer-price"><span>{formatNpr(product.regularPrice)}</span><strong>{formatNpr(product.offerPrice)}</strong><small>+ {formatNpr(product.deliveryFee)} delivery</small><Link href="/checkout" className="button-primary">Order now</Link></div></div></section>
+    <section className="offer-section"><div className="shell offer-inner"><div><p className="eyebrow">Limited launch price</p><h2>Refresh your style with handmade crochet fashion.</h2><p>Pay only when your order arrives. We’ll call first to confirm every detail.</p></div><div className="offer-price"><span>{formatNpr(product.regularPrice)}</span><strong>{formatNpr(product.offerPrice)}</strong><small>+ {formatNpr(product.deliveryFee)} delivery</small><a href="/checkout" className="button-primary">Order now</a></div></div></section>
 
     <TestimonialsSection />
 
@@ -85,7 +85,7 @@ export function LandingPage() {
 
     <section id="order-form" className="order-form-section"><div className="shell order-form-grid"><div><p className="eyebrow">Prefer to order here?</p><h2>Simple details.<br/>No online payment.</h2><p>Complete the form and pay cash when your order arrives. We’ll confirm everything by phone first.</p><div className="mini-trust"><span><ShieldCheck/>Secure server submission</span><span><Truck/>Nationwide delivery</span><span><HeartHandshake/>Personal confirmation</span></div></div><OrderForm compact /></div></section>
 
-    <section className="final-cta shell"><div><p className="eyebrow">Your next signature piece</p><h2>Wear something worth noticing.</h2><p>Cash on delivery. Nationwide in Nepal. Personal order confirmation.</p></div><Link href="/checkout" className="button-gold">Order your shirt <ArrowRight size={18}/></Link></section>
+    <section className="final-cta shell"><div><p className="eyebrow">Your next signature piece</p><h2>Wear something worth noticing.</h2><p>Cash on delivery. Nationwide in Nepal. Personal order confirmation.</p></div><a href="/checkout" className="button-gold">Order your shirt <ArrowRight size={18}/></a></section>
 
     <footer className="footer"><div className="shell footer-grid"><Link href="/" className="footer-logo-surface" aria-label={`${product.brand} home`}><BrandLogo className="brand-logo-footer" /></Link><p>A considered crochet statement for everyday wardrobes.</p><div><a href={`mailto:${product.businessEmail}`}><Mail size={16}/>{product.businessEmail}</a><span><MapPin size={16}/>Delivery across Nepal</span></div></div><div className="shell footer-bottom"><span>© {new Date().getFullYear()} {product.brand}</span><span>Cash on Delivery · Nepal</span></div></footer>
     <MobileOrderBar />

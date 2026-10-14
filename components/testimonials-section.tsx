@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { BadgeCheck, Star } from "lucide-react";
 import { formatNpr, product } from "@/lib/product";
 import { testimonials, type Testimonial } from "@/lib/testimonials";
@@ -55,7 +54,7 @@ export function TestimonialsSection() {
         <p className="testimonial-swipe-hint" aria-hidden="true">Swipe to explore</p>
         <div className="testimonials-cta">
           <p>Ready to make it yours?</p>
-          <Link href="/checkout" className="button-primary">Order Yours — {formatNpr(product.offerPrice)}</Link>
+          <a href="/checkout" className="button-primary">Order Yours — {formatNpr(product.offerPrice)}</a>
           <small>Cash on Delivery <span aria-hidden="true">•</span> Nationwide Delivery Across Nepal</small>
         </div>
       </div>
