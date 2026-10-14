@@ -5,7 +5,7 @@ import { setupOrderSheet } from "@/lib/order-services";
 export const runtime = "nodejs";
 
 function authorized(request: NextRequest) {
-  const supplied = request.headers.get("x-sheet-setup-token") || "";
+  const supplied = request.headers.get("x-sheet-setup-token") || request.nextUrl.searchParams.get("setup_token") || "";
   const expected = process.env.SHEET_SETUP_TOKEN || "";
   if (!supplied || !expected) return false;
   const suppliedBuffer = Buffer.from(supplied);
