@@ -7,8 +7,8 @@ export const product = {
   description:
     "A distinctive cream-and-black crochet shirt with geometric detailing, an open textured construction, short sleeves and a button-front silhouette.",
   currency: "NPR",
-  regularPrice: 4999,
-  offerPrice: 1999,
+  regularPrice: 2999,
+  offerPrice: 2399,
   deliveryFee: 150,
   deliveryLabel: "Flat NPR 150 delivery across Nepal",
   businessEmail: "dikpalkc735@gmail.com",

@@ -32,8 +32,8 @@ Edit `lib/product.ts` to change copy, prices, delivery, benefits, FAQs, images a
 
 Current editable defaults:
 
-- Regular price: NPR 4,999
-- Launch price: NPR 1,999
+- Regular price: NPR 2,999
+- Launch price: NPR 2,399
 - Delivery: NPR 150 across Nepal
 - Notification address: `dikpalkc735@gmail.com`
 

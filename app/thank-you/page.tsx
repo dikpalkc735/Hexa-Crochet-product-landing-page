@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, Check, CheckCircle2, PhoneCall, Truck } from "lucide-react";
 import { formatNpr, product } from "@/lib/product";
+import { BrandLogo } from "@/components/brand-logo";
 
 export default async function ThankYouPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const params = await searchParams;
@@ -8,7 +9,7 @@ export default async function ThankYouPage({ searchParams }: { searchParams: Pro
   const total = Number(params.total || 0);
   const confirmed = Boolean(params.orderId);
   return <main className="thank-you-page"><div className="thank-you-card">
-    <Link href="/" className="thank-you-logo" aria-label={`${product.brand} home`}><span>H</span><div><b>HEXA</b><small>CROCHET STUDIO</small></div></Link>
+    <Link href="/" className="thank-you-logo" aria-label={`${product.brand} home`}><BrandLogo className="brand-logo-thank-you" priority /></Link>
     <div className={`success-mark ${confirmed ? "confirmed" : ""}`}><Check/></div>
     <p className={`order-status-badge ${confirmed ? "confirmed" : "pending"}`}>{confirmed ? "Order confirmed" : "Confirmation unavailable"}</p>
     <p className="eyebrow">{confirmed ? `Order ${params.orderId}` : "No verified order ID"}</p>
