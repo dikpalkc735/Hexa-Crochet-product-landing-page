@@ -23,3 +23,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, error: error instanceof Error ? error.message : "Sheet setup failed." }, { status: 500 });
   }
 }
+
+export const GET = POST;
