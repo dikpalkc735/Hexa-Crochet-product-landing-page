@@ -42,7 +42,10 @@ async function googleAccessToken() {
   const unsigned = `${base64Url(JSON.stringify({ alg: "RS256", typ: "JWT" }))}.${base64Url(JSON.stringify({ iss: email, scope: "https://www.googleapis.com/auth/spreadsheets", aud: "https://oauth2.googleapis.com/token", iat: now, exp: now + 3600 }))}`;
   const signature = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", key, new TextEncoder().encode(unsigned));
   const response = await fetch("https://oauth2.googleapis.com/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer", assertion: `${unsigned}.${base64Url(new Uint8Array(signature))}` }) });
-  if (!response.ok) throw new Error(`Google authentication failed (${response.status}). Check the service-account email and private key.`);
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(`Google authentication failed (${response.status}): ${detail.slice(0, 500)}. Check the service-account email and private key.`);
+  }
   const data = await response.json() as { access_token?: string };
   if (!data.access_token) throw new Error("Google authentication returned no access token.");
   return data.access_token;
