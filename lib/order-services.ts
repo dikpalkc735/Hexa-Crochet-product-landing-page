@@ -88,6 +88,7 @@ async function prepareOrderSheet() {
   const gold = { red: 0.769, green: 0.604, blue: 0.384 };
   const warmWhite = { red: 1, green: 0.988, blue: 0.969 };
   const cream = { red: 0.969, green: 0.949, blue: 0.91 };
+  const charcoal = { red: 0.161, green: 0.161, blue: 0.161 };
   const sheetRange = { sheetId, startRowIndex: 0, endRowIndex: rowCount, startColumnIndex: 0, endColumnIndex: 13 };
   const requests: object[] = [];
 
@@ -99,7 +100,7 @@ async function prepareOrderSheet() {
     { updateSheetProperties: { properties: { sheetId, gridProperties: { frozenRowCount: 1 }, tabColorStyle: { rgbColor: gold } }, fields: "gridProperties.frozenRowCount,tabColorStyle" } },
     { updateDimensionProperties: { range: { sheetId, dimension: "ROWS", startIndex: 0, endIndex: 1 }, properties: { pixelSize: 42 }, fields: "pixelSize" } },
     { repeatCell: { range: { sheetId, startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: 13 }, cell: { userEnteredFormat: { backgroundColorStyle: { rgbColor: darkGreen }, horizontalAlignment: "CENTER", verticalAlignment: "MIDDLE", wrapStrategy: "WRAP", textFormat: { bold: true, fontFamily: "Arial", fontSize: 10, foregroundColorStyle: { rgbColor: warmWhite } }, padding: { top: 8, right: 8, bottom: 8, left: 8 } } }, fields: "userEnteredFormat" } },
-    { repeatCell: { range: { sheetId, startRowIndex: 1, endRowIndex: rowCount, startColumnIndex: 0, endColumnIndex: 13 }, cell: { userEnteredFormat: { verticalAlignment: "MIDDLE", textFormat: { fontFamily: "Arial", fontSize: 10 }, padding: { top: 6, right: 7, bottom: 6, left: 7 } } }, fields: "userEnteredFormat.verticalAlignment,userEnteredFormat.textFormat,userEnteredFormat.padding" } },
+    { repeatCell: { range: { sheetId, startRowIndex: 1, endRowIndex: rowCount, startColumnIndex: 0, endColumnIndex: 13 }, cell: { userEnteredFormat: { backgroundColorStyle: { rgbColor: warmWhite }, verticalAlignment: "MIDDLE", textFormat: { fontFamily: "Arial", fontSize: 10, foregroundColorStyle: { rgbColor: charcoal } }, padding: { top: 6, right: 7, bottom: 6, left: 7 } } }, fields: "userEnteredFormat.backgroundColorStyle,userEnteredFormat.verticalAlignment,userEnteredFormat.textFormat,userEnteredFormat.padding" } },
     { repeatCell: { range: { sheetId, startRowIndex: 1, endRowIndex: rowCount, startColumnIndex: 5, endColumnIndex: 7 }, cell: { userEnteredFormat: { wrapStrategy: "WRAP" } }, fields: "userEnteredFormat.wrapStrategy" } },
     { repeatCell: { range: { sheetId, startRowIndex: 1, endRowIndex: rowCount, startColumnIndex: 12, endColumnIndex: 13 }, cell: { userEnteredFormat: { wrapStrategy: "WRAP" } }, fields: "userEnteredFormat.wrapStrategy" } },
     { repeatCell: { range: { sheetId, startRowIndex: 1, endRowIndex: rowCount, startColumnIndex: 7, endColumnIndex: 8 }, cell: { userEnteredFormat: { horizontalAlignment: "CENTER", numberFormat: { type: "NUMBER", pattern: "0" } } }, fields: "userEnteredFormat.horizontalAlignment,userEnteredFormat.numberFormat" } },
@@ -137,7 +138,7 @@ export async function appendOrderToSheet(order: OrderRecord) {
   const { token, tab } = await prepareOrderSheet();
   const exactLocation = [order.address, order.city, order.postalCode].filter(Boolean).join(", ");
   const notes = [order.size ? `Size: ${order.size}` : "", order.notes || ""].filter(Boolean).join(" | ");
-  await sheetsRequest(`/values/${encodeURIComponent(`'${tab.replace(/'/g, "''")}'!A:M`)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`, token, { method: "POST", body: JSON.stringify({ values: [[order.orderId, order.dateTime, order.customerName, order.phone, order.email, exactLocation, order.productName, order.quantity, order.pricePerPiece, order.totalPrice, order.paymentMethod, order.orderStatus, notes]] }) });
+  await sheetsRequest(`/values/${encodeURIComponent(`'${tab.replace(/'/g, "''")}'!A:M`)}:append?valueInputOption=USER_ENTERED&insertDataOption=OVERWRITE`, token, { method: "POST", body: JSON.stringify({ values: [[order.orderId, order.dateTime, order.customerName, order.phone, order.email, exactLocation, order.productName, order.quantity, order.pricePerPiece, order.totalPrice, order.paymentMethod, order.orderStatus, notes]] }) });
 }
 
 function escapeHtml(value: string | number) {
