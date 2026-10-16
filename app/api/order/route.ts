@@ -24,9 +24,10 @@ function missingSheetConfig() {
 
 function emailConfigured() {
   const common = Boolean(process.env.BUSINESS_EMAIL);
+  const smtp = ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS"].every((key) => Boolean(process.env[key]));
   const googleBridge = Boolean(process.env.GOOGLE_APPS_SCRIPT_EMAIL_URL);
   const resend = ["EMAIL_FROM", "EMAIL_SERVICE_API_KEY"].every((key) => Boolean(process.env[key]));
-  return common && (googleBridge || resend);
+  return common && (smtp || googleBridge || resend);
 }
 
 export async function POST(request: NextRequest) {

@@ -1,4 +1,5 @@
 import { formatNpr, product } from "@/lib/product";
+import nodemailer from "nodemailer";
 
 export type OrderRecord = {
   orderId: string;
@@ -191,7 +192,50 @@ async function sendViaGoogleAppsScript(order: OrderRecord) {
   if (!result.success) throw new Error(`Google email bridge failed: ${result.error || "Unknown response"}`);
 }
 
+async function sendViaSmtp(order: OrderRecord) {
+  const port = Number(process.env.SMTP_PORT || 465);
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port,
+    secure: port === 465,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+    connectionTimeout: 15_000,
+    greetingTimeout: 15_000,
+    socketTimeout: 30_000,
+  });
+  const brand = process.env.BRAND_NAME || product.brand;
+  const from = process.env.EMAIL_FROM || process.env.SMTP_USER!;
+  const messages = [
+    transporter.sendMail({
+      from,
+      to: process.env.BUSINESS_EMAIL,
+      replyTo: order.email || from,
+      subject: `New Product Order Received - ${order.orderId}`,
+      html: businessEmailHtml(order),
+    }),
+    transporter.sendMail({
+      from,
+      to: order.email,
+      replyTo: process.env.BUSINESS_EMAIL || from,
+      subject: `Your Order Has Been Received - ${brand}`,
+      html: customerEmailHtml(order),
+    }),
+  ];
+  const results = await Promise.allSettled(messages);
+  const failures = results.filter((result): result is PromiseRejectedResult => result.status === "rejected");
+  if (failures.length) {
+    throw new Error(failures.map((failure) => failure.reason instanceof Error ? failure.reason.message : String(failure.reason)).join("; "));
+  }
+}
+
 export async function sendOrderEmails(order: OrderRecord) {
+  if (["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS"].every((key) => Boolean(process.env[key]))) {
+    await sendViaSmtp(order);
+    return;
+  }
   if (process.env.GOOGLE_APPS_SCRIPT_EMAIL_URL) {
     await sendViaGoogleAppsScript(order);
     return;
